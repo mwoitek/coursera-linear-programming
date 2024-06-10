@@ -1,0 +1,28 @@
+{
+  "editor.formatOnSave": true,
+  "editor.quickSuggestionsDelay": 400,
+  "python.analysis.autoImportCompletions": false,
+  "python.languageServer": "None",
+  "pyright.disableOrganizeImports": true,
+  "notebook.codeActionsOnSave": {
+    "notebook.source.organizeImports": "explicit"
+  },
+  "[python]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    },
+    "editor.codeLens": true,
+    "editor.defaultFormatter": "charliermarsh.ruff"
+  },
+  "jupyter.askForKernelRestart": false,
+  "jupyter.exportWithOutputEnabled": true,
+  "jupyter.interactiveWindow.cellMarker.decorateCells": "None",
+  "jupyter.interactiveWindow.codeLens.commands": "jupyter.runcell, jupyter.runallcellsabove, jupyter.runcellandallbelow",
+  "jupyter.interactiveWindow.codeLens.enableGotoCell": false,
+  "jupyter.interactiveWindow.creationMode": "perFile",
+  "jupyter.interactiveWindow.textEditor.autoAddNewCell": false,
+  "jupyter.interactiveWindow.textEditor.autoMoveToNextCell": false,
+  "jupyter.interactiveWindow.textEditor.cellFolding": false,
+  "jupyter.interactiveWindow.textEditor.executeSelection": true,
+  "jupyter.interactiveWindow.textEditor.magicCommandsAsComments": true
+}
