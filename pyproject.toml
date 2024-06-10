@@ -1,6 +1,6 @@
 [tool.pyright]
 useLibraryCodeForTypes = true
-analyzeUnannotatedFunctions = false
+analyzeUnannotatedFunctions = true
 reportUnnecessaryCast = "information"
 reportUnusedExpression = false
 reportUnnecessaryTypeIgnoreComment = "information"
