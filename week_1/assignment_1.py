@@ -351,3 +351,65 @@ for j in range(m):
 
 assert abs(obj_val - 1598.11) <= 1e-1
 print("Test Passed: 5 points")
+
+# %% [markdown]
+# ## Problem 3B: Optimal Pricing Model
+
+
+# %%
+def compute_optimal_prices(source_coords, source_weights, dest_coords, dest_weights):
+    n = len(source_coords)
+    assert n == len(source_weights)
+    m = len(dest_coords)
+    assert m == len(dest_weights)
+    assert sum(source_weights) == sum(dest_weights)
+
+    lp_model = LpProblem("Transportation", LpMaximize)
+
+    # Decision variables
+    source_vars = [LpVariable(f"SourcePrice_{i}", lowBound=0) for i in range(n)]
+    dest_vars = [LpVariable(f"DestinationPrice_{j}", lowBound=0) for j in range(m)]
+
+    # Objective function
+    source_price = lpSum(source_vars[i] * source_weights[i] for i in range(n))
+    dest_price = lpSum(dest_vars[j] * dest_weights[j] for j in range(m))
+    lp_model += dest_price - source_price
+
+    # Constraints
+    for i in range(n):
+        for j in range(m):
+            lp_model += dest_vars[j] - source_vars[i] <= calculate_distance(source_coords[i], dest_coords[j])
+
+    lp_model.solve()
+    return [v.varValue for v in source_vars], [v.varValue for v in dest_vars]
+
+
+# %%
+source_coords = [(1, 5), (4, 1), (5, 5)]
+source_weights = [9, 4, 5]
+dest_coords = [(2, 2), (6, 6)]
+dest_weights = [9, 9]
+n = 3
+m = 2
+source_prices, dest_prices = compute_optimal_prices(source_coords, source_weights, dest_coords, dest_weights)
+profit = sum(p * w for p, w in zip(dest_prices, dest_weights)) - sum(  # pyright: ignore
+    p * w  # pyright: ignore
+    for p, w in zip(source_prices, source_weights)
+)
+assert abs(profit - 52.22) <= 1e-01, f"Error: Expected profit is 52.22 obtained: {profit}"
+print("Test Passed: 7 points")
+
+# %%
+source_coords = [(i, 1) for i in range(20)]
+source_weights = [10] * 20
+dest_coords = [(6, i + 5) for i in range(8)] + [(14, i + 5) for i in range(8)]
+dest_weights = [12.5] * 16
+n = 20
+m = 16
+source_prices, dest_prices = compute_optimal_prices(source_coords, source_weights, dest_coords, dest_weights)
+profit = sum(p * w for p, w in zip(dest_prices, dest_weights)) - sum(  # pyright: ignore
+    p * w  # pyright: ignore
+    for p, w in zip(source_prices, source_weights)
+)
+assert abs(profit - 1598.11) <= 1e-1, f"Error: Expected profit is 1598.11 obtained: {profit}"
+print("Test Passed: 8 points")
