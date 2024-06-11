@@ -184,3 +184,41 @@ print("Passed: 3 points!")
 # \begin{equation}
 # 100.5 x_1 + 164.5 x_2 + 49.79 x_3 - 37 x_4 + 14.5 x_5 + 70 x_6 \leq 0
 # \end{equation}
+
+# %%
+# Create a linear programming model and set it to maximize its objective
+lpModel = pl.LpProblem("InvestmentProblem", pl.LpMaximize)
+
+# Create a variable called x1 and set its bounds to be between 0 and infinity
+x1 = pl.LpVariable("x1", 0)
+
+# Next create variables x2, ..., x6
+x2 = pl.LpVariable("x2", 0)
+x3 = pl.LpVariable("x3", 0)
+x4 = pl.LpVariable("x4", 0)
+x5 = pl.LpVariable("x5", 0)
+x6 = pl.LpVariable("x6", 0)
+
+# Set the objective function
+lpModel += 25 * x1 + 20 * x2 + 3 * x3 + 1.5 * x4 + 3 * x5 + 4.5 * x6
+
+# Add the constraints
+lpModel += 129 * x1 + 286 * x2 + 72.29 * x3 + 38 * x4 + 52 * x5 + 148 * x6 <= 10000
+lpModel += 387 * x1 + 858 * x2 <= 20000
+lpModel += 216.87 * x3 + 114 * x4 <= 20000
+lpModel += 156 * x5 + 444 * x6 <= 20000
+lpModel += 774 * x1 + 1716 * x2 >= 10000
+lpModel += 433.74 * x3 + 228 * x4 >= 10000
+lpModel += 312 * x5 + 888 * x6 >= 10000
+lpModel += 100.5 * x1 + 164.5 * x2 + 49.79 * x3 - 37 * x4 + 14.5 * x5 + 70 * x6 <= 0
+
+# Solve the model and print the solutions
+lpModel.solve()
+for v in lpModel.variables():
+    print(v.name, "=", v.varValue)
+
+# Optimized objective function
+print("Objective value =", pl.value(lpModel.objective))
+
+# %%
+assert abs(pl.value(lpModel.objective) - 1098.59) <= 0.1, "Test failed"
