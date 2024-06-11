@@ -1,10 +1,11 @@
 {
   "editor.formatOnSave": true,
   "editor.quickSuggestionsDelay": 400,
-  "python.analysis.autoImportCompletions": false,
   "python.languageServer": "None",
+  "basedpyright.analysis.autoImportCompletions": false,
+  "basedpyright.analysis.diagnosticMode": "openFilesOnly",
+  "basedpyright.disableOrganizeImports": true,
   "ruff.nativeServer": true,
-  "pyright.disableOrganizeImports": true,
   "notebook.codeActionsOnSave": {
     "notebook.source.organizeImports": "explicit"
   },

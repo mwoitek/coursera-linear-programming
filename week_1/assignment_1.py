@@ -20,7 +20,8 @@
 # %%
 import re
 
-import pulp as pl
+# It's moronic to do this, but I want to avoid problems with the autograder
+from pulp import *  # pyright: ignore [reportWildcardImportFromLibrary]
 
 # %% [markdown]
 # ## Problem 1: Use PuLP to encode a linear programming problem
@@ -42,22 +43,22 @@ def formulate_lp_problem(m, n, list_c, list_a, list_b):
     assert all(len(lst) == n for lst in list_a)
 
     # Create a linear programming model and set it to maximize its objective
-    lp_model = pl.LpProblem("LPProblem", pl.LpMaximize)
+    lp_model = LpProblem("LPProblem", LpMaximize)
 
     # Create all the decision variables and store them in a list
-    decision_vars = [pl.LpVariable(f"x{i}") for i in range(n)]
+    decision_vars = [LpVariable(f"x{i}") for i in range(n)]
 
     # Create the objective function
-    lp_model += pl.lpSum([c * v for c, v in zip(list_c, decision_vars)])
+    lp_model += lpSum([c * v for c, v in zip(list_c, decision_vars)])
 
     # Create all the constraints
     for coeffs, rhs in zip(list_a, list_b):
-        lhs = pl.lpSum([c * v for c, v in zip(coeffs, decision_vars)])
+        lhs = lpSum([c * v for c, v in zip(coeffs, decision_vars)])
         lp_model += lhs <= rhs
 
     # Solve the problem and get its status
     lp_model.solve()
-    status = pl.LpStatus[lp_model.status]
+    status = LpStatus[lp_model.status]
 
     # Return the expected tuple
     is_feasible = False
@@ -187,17 +188,17 @@ print("Passed: 3 points!")
 
 # %%
 # Create a linear programming model and set it to maximize its objective
-lpModel = pl.LpProblem("InvestmentProblem", pl.LpMaximize)
+lpModel = LpProblem("InvestmentProblem", LpMaximize)
 
 # Create a variable called x1 and set its bounds to be between 0 and infinity
-x1 = pl.LpVariable("x1", 0)
+x1 = LpVariable("x1", 0)
 
 # Next create variables x2, ..., x6
-x2 = pl.LpVariable("x2", 0)
-x3 = pl.LpVariable("x3", 0)
-x4 = pl.LpVariable("x4", 0)
-x5 = pl.LpVariable("x5", 0)
-x6 = pl.LpVariable("x6", 0)
+x2 = LpVariable("x2", 0)
+x3 = LpVariable("x3", 0)
+x4 = LpVariable("x4", 0)
+x5 = LpVariable("x5", 0)
+x6 = LpVariable("x6", 0)
 
 # Set the objective function
 lpModel += 25 * x1 + 20 * x2 + 3 * x3 + 1.5 * x4 + 3 * x5 + 4.5 * x6
@@ -218,7 +219,7 @@ for v in lpModel.variables():
     print(v.name, "=", v.varValue)
 
 # Optimized objective function
-print("Objective value =", pl.value(lpModel.objective))
+print("Objective value =", value(lpModel.objective))
 
 # %%
-assert abs(pl.value(lpModel.objective) - 1098.59) <= 0.1, "Test failed"
+assert abs(value(lpModel.objective) - 1098.59) <= 0.1, "Test failed"
