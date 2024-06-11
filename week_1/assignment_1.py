@@ -223,3 +223,137 @@ print("Objective value =", value(lpModel.objective))
 
 # %%
 assert abs(value(lpModel.objective) - 1098.59) <= 0.1, "Test failed"
+
+# %% [markdown]
+# ## Problem 3: Optimal Transport
+#
+# Write down the objective function in terms of $x_{i,j}$ and $D_{i,j}$ for
+# $1 \leq i \leq n$ and $1 \leq j \leq m$. Also indicate if we are going to
+# maximize or minimize it.
+# \begin{equation}
+# \min \qquad \sum_{i=1}^{n} \sum_{j=1}^{m} x_{i,j} D_{i,j}
+# \end{equation}
+#
+# Next, for each source location $i$, the total amount of material transported
+# from $i$ to various destination locations must sum up to $w_i$: the total
+# weight of material at location $i$. Write down a constraint to enforce this.
+# \begin{equation}
+# \sum_{j=1}^{m} x_{i,j} = w_i, \qquad 1 \leq i \leq n
+# \end{equation}
+#
+# Next, for each destination location $j$, the total amount of material
+# transported to $j$ from various source locations must sum up to $w_{j}^{\prime}$:
+# the total weight of material at destination location $j$. Write down a
+# constraint to enforce this.
+# \begin{equation}
+# \sum_{i=1}^{n} x_{i,j} = w_{j}^{\prime}, \qquad 1 \leq j \leq m
+# \end{equation}
+
+
+# %%
+def calculate_distance(a, b):
+    (xa, ya) = a
+    (xb, yb) = b
+    return ((xa - xb) ** 2 + (ya - yb) ** 2) ** (1 / 2)
+
+
+def get_objective(var_values, source_coords, dest_coords):
+    n = len(source_coords)
+    m = len(dest_coords)
+    return sum(
+        var_values[i][j] * calculate_distance(source_coords[i], dest_coords[j])
+        for i in range(n)
+        for j in range(m)
+    )
+
+
+def calculate_optimal_transport_plan(source_coords, source_weights, dest_coords, dest_weights):
+    n = len(source_coords)
+    assert n == len(source_weights)
+    m = len(dest_coords)
+    assert m == len(dest_weights)
+    assert sum(source_weights) == sum(dest_weights)
+
+    # Create the LP model
+    lp_model = LpProblem("OptimalTransport", LpMinimize)
+
+    # Create a list of decision variables x_{i,j}
+    decision_vars = [[LpVariable(f"x_{{{i},{j}}}", lowBound=0) for j in range(m)] for i in range(n)]
+
+    # Add the objective function
+    lp_model += lpSum(
+        decision_vars[i][j] * calculate_distance(source_coords[i], dest_coords[j])
+        for i in range(n)
+        for j in range(m)
+    )
+
+    # Add the constraints
+    for i in range(n):
+        lp_model += lpSum(decision_vars[i][j] for j in range(m)) == source_weights[i]
+    for j in range(m):
+        lp_model += lpSum(decision_vars[i][j] for i in range(n)) == dest_weights[j]
+
+    # Solve and return the solution
+    lp_model.solve()
+    return [[value(decision_vars[i][j]) for j in range(m)] for i in range(n)]
+
+
+# %%
+source_coords = [(1, 5), (4, 1), (5, 5)]
+source_weights = [9, 4, 5]
+dest_coords = [(2, 2), (6, 6)]
+dest_weights = [9, 9]
+n = 3
+m = 2
+var_values = calculate_optimal_transport_plan(source_coords, source_weights, dest_coords, dest_weights)
+obj_val = get_objective(var_values, source_coords, dest_coords)
+print(f"Objective value: {obj_val}")
+
+# Check the solution
+for i in range(n):
+    assert sum(var_values[i][j] for j in range(m)) == source_weights[i]  # pyright: ignore
+for j in range(m):
+    assert sum(var_values[i][j] for i in range(n)) == dest_weights[j]  # pyright: ignore
+
+assert abs(obj_val - 52.22) <= 1e-01
+print("Test Passed: 10 points")
+
+# %%
+source_coords = [(1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6)]
+source_weights = [10, 10, 10, 10, 10, 10]
+dest_coords = [(6, 1), (5, 2), (4, 3), (3, 2), (2, 1)]
+dest_weights = [12, 12, 12, 12, 12]
+n = 6
+m = 5
+var_values = calculate_optimal_transport_plan(source_coords, source_weights, dest_coords, dest_weights)
+obj_val = get_objective(var_values, source_coords, dest_coords)
+print(f"Objective value: {obj_val}")
+
+# Check the solution
+for i in range(n):
+    assert sum(var_values[i][j] for j in range(m)) == source_weights[i]  # pyright: ignore
+for j in range(m):
+    assert sum(var_values[i][j] for i in range(n)) == dest_weights[j]  # pyright: ignore
+
+assert abs(obj_val - 127.19) <= 1e-1
+print("Test Passed: 8 points")
+
+# %%
+source_coords = [(i, 1) for i in range(20)]
+source_weights = [10] * 20
+dest_coords = [(6, i + 5) for i in range(8)] + [(14, i + 5) for i in range(8)]
+dest_weights = [12.5] * 16
+n = 20
+m = 16
+var_values = calculate_optimal_transport_plan(source_coords, source_weights, dest_coords, dest_weights)
+obj_val = get_objective(var_values, source_coords, dest_coords)
+print(f"Objective value: {obj_val}")
+
+# Check the solution
+for i in range(n):
+    assert sum(var_values[i][j] for j in range(m)) == source_weights[i]  # pyright: ignore
+for j in range(m):
+    assert sum(var_values[i][j] for i in range(n)) == dest_weights[j]  # pyright: ignore
+
+assert abs(obj_val - 1598.11) <= 1e-1
+print("Test Passed: 5 points")
