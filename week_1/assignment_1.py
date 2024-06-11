@@ -18,8 +18,6 @@
 # ## Imports
 
 # %%
-import re
-
 # It's moronic to do this, but I want to avoid problems with the autograder
 from pulp import *  # pyright: ignore [reportWildcardImportFromLibrary]
 
@@ -28,11 +26,6 @@ from pulp import *  # pyright: ignore [reportWildcardImportFromLibrary]
 
 
 # %%
-# Define a key function to extract the numeric part of each variable name
-def extract_number(lp_var):
-    return int(re.search(r"\d+", lp_var.name).group())  # pyright: ignore [reportOptionalMemberAccess]
-
-
 def formulate_lp_problem(m, n, list_c, list_a, list_b):
     # Assert that the data is compatible
     assert m > 0
@@ -53,8 +46,7 @@ def formulate_lp_problem(m, n, list_c, list_a, list_b):
 
     # Create all the constraints
     for coeffs, rhs in zip(list_a, list_b):
-        lhs = lpSum([c * v for c, v in zip(coeffs, decision_vars)])
-        lp_model += lhs <= rhs
+        lp_model += lpSum([c * v for c, v in zip(coeffs, decision_vars)]) <= rhs
 
     # Solve the problem and get its status
     lp_model.solve()
@@ -68,9 +60,7 @@ def formulate_lp_problem(m, n, list_c, list_a, list_b):
     if status == "Optimal":
         is_feasible = True
         is_bounded = True
-        # Get the model variables in the right order
-        lp_vars = sorted(lp_model.variables(), key=extract_number)
-        opt_sol = [lp_var.varValue for lp_var in lp_vars]
+        opt_sol = [value(decision_vars[i]) for i in range(n)]
     elif status == "Unbounded":
         is_feasible = True
 
@@ -88,6 +78,9 @@ is_feas, is_bnded, sols = formulate_lp_problem(m, n, list_c, list_a, list_b)
 assert is_feas, "The LP should be feasible -- your code returns infeasible"
 assert is_bnded, "The LP should be bounded -- your code returns unbounded"
 print(sols)
+assert sols[0] is not None
+assert sols[1] is not None
+assert sols[2] is not None
 assert abs(sols[0] - 2.0) <= 1e-04, "x0 must be 2.0"
 assert abs(sols[1] - 9.0) <= 1e-04, "x1 must be 9.0"
 assert abs(sols[2] + 4.0) <= 1e-04, "x2 must be -4.0"
@@ -135,8 +128,9 @@ is_feas, is_bnded, sols = formulate_lp_problem(m, n, list_c, list_a, list_b)
 assert is_feas, "Problem is feasible but your code returned infeasible"
 assert is_bnded, "Problem is bounded but your code returned unbounded"
 print(sols)
+assert sols[6] is not None
 assert abs(sols[6] - 1.0) <= 1e-03, "Solution does not match expected one"
-assert all([abs(sols[i]) <= 1e-03 for i in range(n) if i != 6]), "Solution does not match expected one"
+assert all(abs(sols[i]) <= 1e-03 for i in range(n) if i != 6), "Solution does not match expected one"  # pyright: ignore [reportArgumentType]
 print("Passed: 3 points!")
 
 # %% [markdown]
