@@ -1,9 +1,8 @@
 [tool.pyright]
-useLibraryCodeForTypes = true
-analyzeUnannotatedFunctions = true
+typeCheckingMode = "basic"
 reportUnnecessaryCast = "information"
-reportUnusedExpression = false
 reportUnnecessaryTypeIgnoreComment = "information"
+reportUnusedExpression = false
 
 [tool.ruff]
 line-length = 110

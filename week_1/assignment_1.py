@@ -29,9 +29,7 @@ import pulp as pl
 # %%
 # Define a key function to extract the numeric part of each variable name
 def extract_number(lp_var):
-    match_obj = re.search(r"\d+", lp_var.name)
-    assert match_obj is not None
-    return int(match_obj.group())
+    return int(re.search(r"\d+", lp_var.name).group())  # pyright: ignore [reportOptionalMemberAccess]
 
 
 def formulate_lp_problem(m, n, list_c, list_a, list_b):
@@ -139,3 +137,50 @@ print(sols)
 assert abs(sols[6] - 1.0) <= 1e-03, "Solution does not match expected one"
 assert all([abs(sols[i]) <= 1e-03 for i in range(n) if i != 6]), "Solution does not match expected one"
 print("Passed: 3 points!")
+
+# %% [markdown]
+# ## Problem 2: LP formulation for an investment problem
+#
+# Write down the expression for the objective function in terms of
+# $x_1, \ldots, x_6$. Also specify if we are to maximize or minimize it.
+# \begin{equation}
+# \max \qquad 25 x_1 + 20 x_2 + 3 x_3 + 1.5 x_4 + 3 x_5 + 4.5 x_6
+# \end{equation}
+#
+# Write down the constraint that expresses that the total cost of investment
+# must be less than $B = 10,000$.
+# \begin{equation}
+# 129 x_1 + 286 x_2 + 72.29 x_3 + 38 x_4 + 52 x_5 + 148 x_6 \leq 10,000
+# \end{equation}
+#
+# Write down the constraints that the total investment in each category cannot
+# exceed 2/3 of the budget. You should write down three constraints, one for
+# each category.
+# \begin{eqnarray}
+#   387 x_1 + 858 x_2 &\leq& 20,000 \\
+#   216.87 x_3 + 114 x_4 &\leq& 20,000 \\
+#   156 x_5 + 444 x_6 &\leq& 20,000
+# \end{eqnarray}
+#
+# Write down the constraints that the total investment in each category must
+# exceed 1/6 of the budget. You should write down three constraints, one for
+# each category.
+# \begin{eqnarray}
+#   774 x_1 + 1,716 x_2 &\geq& 10,000 \\
+#   433.74 x_3 + 228 x_4 &\geq& 10,000 \\
+#   312 x_5 + 888 x_6 &\geq& 10,000
+# \end{eqnarray}
+#
+# Write down an expression for the price of the overall portfolio. Also write
+# down an expression for the overall earnings of the portfolio.
+# \begin{eqnarray}
+#   \mathrm{Price} &=& 129 x_1 + 286 x_2 + 72.29 x_3 + 38 x_4 + 52 x_5 + 148 x_6 \\
+#   \mathrm{Earnings} &=& 1.9 x_1 + 8.1 x_2 + 1.5 x_3 + 5 x_4 + 2.5 x_5 + 5.2 x_6
+# \end{eqnarray}
+#
+# We wish to enforce the constraint that the overall Price/Earnings ratio of
+# the portfolio cannot exceed 15. Write down the constraint as
+# $\mathrm{Price} \leq 15 \times \mathrm{Earnings}$.
+# \begin{equation}
+# 100.5 x_1 + 164.5 x_2 + 49.79 x_3 - 37 x_4 + 14.5 x_5 + 70 x_6 \leq 0
+# \end{equation}
