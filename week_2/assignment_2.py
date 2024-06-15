@@ -23,6 +23,130 @@ from matplotlib.patches import Circle
 from pulp import *  # pyright: ignore [reportWildcardImportFromLibrary]
 
 # %% [markdown]
+# ## Problem 1
+#
+# Write down a constraint that says that each vertex must be colored exactly
+# one of three colors, red, green or blue, in terms of $x_{i}^{R}$, $x_{i}^{G}$
+# and $x_{i}^{B}$.
+# \begin{equation}
+# x_{i}^{R} + x_{i}^{G} + x_{i}^{B} = 1, \qquad i = 1, \ldots, n
+# \end{equation}
+#
+# Write down constraints for each edge $(i, j) \in E$ that they cannot be the
+# same color.
+# \begin{eqnarray}
+# x_{i}^{R} + x_{j}^{R} &\leq& 1 \\
+# x_{i}^{G} + x_{j}^{G} &\leq& 1 \\
+# x_{i}^{B} + x_{j}^{B} &\leq& 1
+# \end{eqnarray}
+
+
+# %%
+# The instructor's test function has a bug. I had to work around it.
+def encode_and_solve_three_coloring(n, edge_list):
+    n -= 1
+    assert n >= 1, "Graph must have at least one vertex"
+    assert all(1 <= i <= n and 1 <= j <= n and i != j for i, j in edge_list), "Edge list is not well formed"
+
+    # Decision variables
+    red_vars = [LpVariable(f"Red{i}", lowBound=0, upBound=1, cat=LpInteger) for i in range(n)]
+    green_vars = [LpVariable(f"Green{i}", lowBound=0, upBound=1, cat=LpInteger) for i in range(n)]
+    blue_vars = [LpVariable(f"Blue{i}", lowBound=0, upBound=1, cat=LpInteger) for i in range(n)]
+
+    # Objective
+    prob = LpProblem("ThreeColor", LpMinimize)
+    prob += lpSum(red_vars) + lpSum(green_vars) + lpSum(blue_vars)
+
+    # Add constraints
+    for i in range(n):
+        prob += red_vars[i] + green_vars[i] + blue_vars[i] == 1
+
+    for i, j in ((i - 1, j - 1) for i, j in edge_list):
+        prob += red_vars[i] + red_vars[j] <= 1
+        prob += green_vars[i] + green_vars[j] <= 1
+        prob += blue_vars[i] + blue_vars[j] <= 1
+
+    # Solve problem and return result
+    prob.solve()
+
+    if LpStatus[prob.status] != "Optimal":
+        return False, []
+
+    color_assignment = ["r"]
+
+    for i in range(n):
+        opts = [
+            ("r", red_vars[i].varValue),
+            ("g", green_vars[i].varValue),
+            ("b", blue_vars[i].varValue),
+        ]
+        color = max(opts, key=lambda p: p[1])[0]  # pyright: ignore
+        color_assignment.append(color)
+
+    return True, color_assignment
+
+
+# %%
+def check_three_color_assign(n, edge_list, color_assign):
+    assert (
+        len(color_assign) == n
+    ), f"Error: The list of color assignments has {len(color_assign)} entries but must be same as number of vertices {n}"
+    assert all(
+        col == "r" or col == "b" or col == "g" for col in color_assign
+    ), f"Error: Each entry in color assignment list must be r, g or b. Your code returned: {color_assign}"
+    for i, j in edge_list:
+        ci = color_assign[i]  # BUG: Vertex labels should not be used as indices!
+        cj = color_assign[j]
+        assert ci != cj, f"Error: For edge ({i}, {j}) we have same color assignment ({ci}, {cj})"
+    print("Success: Three coloring assignment checks out!!")
+
+
+# %%
+n = 5
+edge_list = [(1, 2), (1, 3), (1, 4), (2, 4), (3, 4)]
+flag, color_assign = encode_and_solve_three_coloring(n, edge_list)
+assert flag, "Error: Graph is three colorable but your code wrongly returns flag = False"
+print(f"Three color assignment: {color_assign}")
+check_three_color_assign(n, edge_list, color_assign)
+print("Passed: 10 points!")
+
+# %%
+n = 5
+edge_list = [(1, 2), (1, 3), (1, 4), (2, 3), (2, 4), (3, 4)]
+flag, color_assign = encode_and_solve_three_coloring(n, edge_list)
+assert not flag, "Error: Graph is NOT three colorable but your code wrongly returns flag = True"
+print("Passed: 5 points!")
+
+# %%
+n = 10
+edge_list = [
+    (1, 5),
+    (1, 7),
+    (1, 9),
+    (2, 4),
+    (2, 5),
+    (2, 9),
+    (3, 4),
+    (3, 6),
+    (3, 7),
+    (3, 8),
+    (4, 5),
+    (4, 6),
+    (4, 7),
+    (4, 9),
+    (5, 6),
+    (5, 7),
+    (6, 8),
+    (7, 9),
+    (8, 9),
+]
+flag, color_assign = encode_and_solve_three_coloring(n, edge_list)
+assert flag, "Error: Graph is three colorable but your code wrongly returns flag = False"
+print(f"Three color assignment: {color_assign}")
+check_three_color_assign(n, edge_list, color_assign)
+print("Passed: 5 points!")
+
+# %% [markdown]
 # ## Problem 2
 #
 # Express the number of warehouses created in terms of the decision variables
