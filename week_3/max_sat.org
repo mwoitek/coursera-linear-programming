@@ -2,13 +2,15 @@
 #+TITLE: Max-SAT Approximation
 #+DATE:
 #+LATEX_HEADER: \usepackage[a4paper,left=1cm,right=1cm,top=1cm,bottom=1cm]{geometry}
-#+LATEX_HEADER: \usepackage[T1]{fontenc}
-#+LATEX_HEADER: \usepackage[utf8]{inputenc}
 #+LATEX_HEADER: \usepackage[american]{babel}
 #+LATEX_HEADER: \usepackage[sc]{mathpazo}
 #+LATEX_HEADER: \linespread{1.05}
 #+OPTIONS: toc:nil
 #+STARTUP: hideblocks
+
+#+BEGIN_SRC latex
+\thispagestyle{empty}
+#+END_SRC
 
 * Problem 1
 :PROPERTIES:
