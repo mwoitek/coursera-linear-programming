@@ -8,6 +8,7 @@ pulp = "*"
 notebook = "*"
 jupytext = "*"
 matplotlib = "*"
+networkx = {extras = ["default"], version = "*"}
 
 [dev-packages]
 
