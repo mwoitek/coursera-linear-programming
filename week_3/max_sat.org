@@ -1,23 +1,41 @@
 #+AUTHOR: Marcio Woitek
 #+TITLE: Max-SAT Approximation
+#+DATE:
+#+LATEX_HEADER: \usepackage[a4paper,left=1cm,right=1cm,top=1cm,bottom=1cm]{geometry}
+#+LATEX_HEADER: \usepackage[T1]{fontenc}
+#+LATEX_HEADER: \usepackage[utf8]{inputenc}
+#+LATEX_HEADER: \usepackage[american]{babel}
+#+LATEX_HEADER: \usepackage[sc]{mathpazo}
+#+LATEX_HEADER: \linespread{1.05}
+#+OPTIONS: toc:nil
+#+STARTUP: hideblocks
 
 * Problem 1
+:PROPERTIES:
+:UNNUMBERED: notoc
+:END:
 
 \begin{equation}
-4 \dot \frac{7}{8} = \frac{7}{2} = 3.5
+4 \cdot \frac{7}{8} = \frac{7}{2} = 3.5
 \end{equation}
 
 * Problem 2
+:PROPERTIES:
+:UNNUMBERED: notoc
+:END:
 
 There is a truth assignment that satisfies all the clauses.
 
 * Problem 3
+:PROPERTIES:
+:UNNUMBERED: notoc
+:END:
 
 By setting $x_1 = \mathrm{T}$, the clauses involving $x_1$ reduce to
-\begin{eqnarray}
-x_1 \vee x_2 \vee \bar{x_4} &=& \mathrm{T} \\
-x_1 \vee \bar{x_2} \vee x_3 &=& \mathrm{T}.
-\end{eqnarray}
+\begin{eqnarray*}
+x_1 \vee x_2 \vee \overline{x}_4 &=& \mathrm{T} \\
+x_1 \vee \overline{x}_2 \vee x_3 &=& \mathrm{T}.
+\end{eqnarray*}
 The other 2 clauses remain unchanged. Then the expected number of clauses we can
 satisfy is given by
 \begin{equation}
@@ -25,12 +43,15 @@ satisfy is given by
 \end{equation}
 
 * Problem 4
+:PROPERTIES:
+:UNNUMBERED: notoc
+:END:
 
 By setting $x_1 = \mathrm{F}$, the clauses involving $x_1$ reduce to
-\begin{eqnarray}
-x_1 \vee x_2 \vee \bar{x_4} &=& x_2 \vee \bar{x_4} \\
-x_1 \vee \bar{x_2} \vee x_3 &=& \bar{x_2} \vee x_3.
-\end{eqnarray}
+\begin{eqnarray*}
+x_1 \vee x_2 \vee \overline{x}_4 &=& x_2 \vee \overline{x}_4 \\
+x_1 \vee \overline{x}_2 \vee x_3 &=& \overline{x}_2 \vee x_3.
+\end{eqnarray*}
 The other 2 clauses remain unchanged. Then the expected number of clauses we can
 satisfy is given by
 \begin{equation}
@@ -38,5 +59,8 @@ satisfy is given by
 \end{equation}
 
 * Problem 5
+:PROPERTIES:
+:UNNUMBERED: notoc
+:END:
 
 True

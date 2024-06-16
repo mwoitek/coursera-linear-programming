@@ -1,0 +1,74 @@
+% Created 2024-06-16 Sun 18:37
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage[a4paper,left=1cm,right=1cm,top=1cm,bottom=1cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[american]{babel}
+\usepackage[sc]{mathpazo}
+\linespread{1.05}
+\author{Marcio Woitek}
+\date{}
+\title{Max-SAT Approximation}
+\hypersetup{
+ pdfauthor={Marcio Woitek},
+ pdftitle={Max-SAT Approximation},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 29.3 (Org mode 9.6.24)}, 
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+
+\section*{Problem 1}
+\label{sec:orgffad40c}
+\begin{equation}
+4 \cdot \frac{7}{8} = \frac{7}{2} = 3.5
+\end{equation}
+
+\section*{Problem 2}
+\label{sec:orgd521fc5}
+There is a truth assignment that satisfies all the clauses.
+
+\section*{Problem 3}
+\label{sec:orgd9b2d24}
+By setting \(x_1 = \mathrm{T}\), the clauses involving \(x_1\) reduce to
+\begin{eqnarray*}
+x_1 \vee x_2 \vee \overline{x}_4 &=& \mathrm{T} \\
+x_1 \vee \overline{x}_2 \vee x_3 &=& \mathrm{T}.
+\end{eqnarray*}
+The other 2 clauses remain unchanged. Then the expected number of clauses we can
+satisfy is given by
+\begin{equation}
+1 + \frac{7}{8} + 1 + \frac{7}{8} = 3 + \frac{3}{4} = 3.75
+\end{equation}
+
+\section*{Problem 4}
+\label{sec:org8e27c71}
+By setting \(x_1 = \mathrm{F}\), the clauses involving \(x_1\) reduce to
+\begin{eqnarray*}
+x_1 \vee x_2 \vee \overline{x}_4 &=& x_2 \vee \overline{x}_4 \\
+x_1 \vee \overline{x}_2 \vee x_3 &=& \overline{x}_2 \vee x_3.
+\end{eqnarray*}
+The other 2 clauses remain unchanged. Then the expected number of clauses we can
+satisfy is given by
+\begin{equation}
+\frac{3}{4} + \frac{7}{8} + \frac{3}{4} + \frac{7}{8} = \frac{13}{4} = 3.25
+\end{equation}
+
+\section*{Problem 5}
+\label{sec:org0249b24}
+True
+\end{document}
