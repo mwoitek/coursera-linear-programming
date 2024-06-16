@@ -18,10 +18,11 @@
 # ## Imports
 
 # %%
-from random import randint
+from random import randint, uniform
 
 import networkx as nx
 from matplotlib import pyplot as plt
+from matplotlib.patches import Circle
 
 # %% [markdown]
 # ## Problem 1: Max-cut Problem
@@ -235,3 +236,136 @@ n, m = 500, 10000
 adj_list = mk_random_graph(n, m)
 cut = find_balanced_cut(n, adj_list)
 test_cut(n, adj_list, cut)
+
+# %% [markdown]
+# ## Problem 2: k-centers Clustering Problem
+
+
+# %%
+def euclidean_distance(a, b):
+    (xa, ya) = a
+    (xb, yb) = b
+    return ((xb - xa) ** 2 + (yb - ya) ** 2) ** (1 / 2)
+
+
+def calculate_R(coords, center_indices):
+    n = len(coords)
+    assert all(0 <= j < n for j in center_indices)
+    rj_values = [min(euclidean_distance(xj, coords[j]) for j in center_indices) for xj in coords]
+    return max(rj_values)
+
+
+def plot_coords(coords, center_indices):
+    R = calculate_R(coords, center_indices)  # noqa: N806
+
+    coords_x = [x for x, _ in coords]
+    coords_y = [y for _, y in coords]
+
+    centers_x = [coords_x[j] for j in center_indices]
+    centers_y = [coords_y[j] for j in center_indices]
+
+    _, ax = plt.subplots()
+    ax.axis("equal")
+
+    for k in center_indices:
+        c = Circle(
+            coords[k],
+            R,
+            fill=True,
+            alpha=0.5,
+            facecolor="lightblue",
+            clip_on=False,
+            edgecolor="black",
+            linewidth=1,
+            linestyle="dashed",
+        )
+        ax.add_artist(c)
+
+    ax.scatter(coords_x, coords_y, s=30, marker="x")
+    ax.scatter(centers_x, centers_y, s=50, marker="o")
+
+    plt.show()
+
+
+# %%
+coords = [(1, 2), (3, 5), (4, 7), (8, 14), (9, 3), (7, 7), (6, 5), (4, 6), (5, 2), (1, 8)]
+center_indices = [2, 6]
+R = calculate_R(coords, center_indices)
+print(f"R = {R}")
+plot_coords(coords, center_indices)
+
+# %%
+coords = [(1, 2), (3, 5), (4, 7), (8, 14), (9, 3), (7, 7), (6, 5), (4, 6), (5, 2), (1, 8)]
+center_indices = [1, 5]
+R = calculate_R(coords, center_indices)
+print(f"R = {R}")
+plot_coords(coords, center_indices)
+
+
+# %%
+# Function find_farthest_point_from_current_centers returns a pair (j, rj) where
+# - 0 <= j < len(coords) is the index of the farthest point P_j
+# - rj is the distance of the point P_j from its nearest center
+def find_farthest_point_from_current_centers(coords, center_indices):
+    n = len(coords)
+    assert all(0 <= j < n for j in center_indices)
+    rj_values = [min(euclidean_distance(xi, coords[j]) for j in center_indices) for xi in coords]
+    return max(enumerate(rj_values), key=lambda p: p[1])
+
+
+# Implement a function greedy_k_centers that given a list of coordinates
+# coords, returns center_list, R.
+# - centers_list is a list of indices [j1, ..., jk].
+#   Note that coords[j1], ..., coords[jk] will yield coordinates of the actual centers.
+# - R is the radius resulting from the choice of the k centers.
+def greedy_k_centers(coords, k, debug=True):  # noqa: FBT002
+    centers_list = [0]  # Add the very first point
+    if debug:
+        print(f"Initial center: {coords[0]}")
+    for _ in range(k - 1):
+        j, _ = find_farthest_point_from_current_centers(coords, centers_list)
+        centers_list.append(j)
+    _, R = find_farthest_point_from_current_centers(coords, centers_list)  # noqa: N806
+    return centers_list, R
+
+
+# %%
+coords = [(1, 2), (3, 5), (4, 7), (8, 14), (9, 3), (7, 7), (6, 5), (4, 6), (5, 2), (1, 8)]
+center_indices, R = greedy_k_centers(coords, 2)
+plot_coords(coords, center_indices)
+assert len(center_indices) == 2
+assert (
+    abs(R - calculate_R(coords, center_indices)) <= 1e-06
+), f"The returned value of R={R} from your function does not match with my computation. Something is wrong in your calculations"
+assert 4 <= R <= 16.2
+print("Passed test (5 points)")
+
+# %%
+coords = [(1, 2), (3, 5), (4, 7), (8, 14), (9, 3), (7, 7), (6, 5), (4, 6), (5, 2), (1, 8)]
+center_indices, R = greedy_k_centers(coords, 3)
+plot_coords(coords, center_indices)
+assert len(center_indices) == 3
+assert (
+    abs(R - calculate_R(coords, center_indices)) <= 1e-06
+), f"The returned value of R={R} from your function does not match with my computation. Something is wrong in your calculations"
+assert 3 <= R <= 12
+print("Passed test (5 points)")
+
+# %%
+# Generate 1000 points
+n = 1000
+coords = (
+    [(uniform(-2, -1), uniform(-2, 2)) for _ in range(n // 4)]
+    + [(uniform(-1, 1), uniform(-1, 1)) for _ in range(n // 4)]
+    + [(uniform(1, 2), uniform(-2, 0)) for _ in range(n // 4)]
+    + [(uniform(1, 2), uniform(0, 2)) for _ in range(n // 4)]
+)
+
+k = 12
+center_indices, R = greedy_k_centers(coords, k, debug=False)
+plot_coords(coords, center_indices)
+assert len(center_indices) == k
+assert (
+    abs(R - calculate_R(coords, center_indices)) <= 1e-06
+), f"The returned value of R={R} from your function does not match with my computation. Something is wrong in your calculations"
+print("Test Passed (5 points)")
