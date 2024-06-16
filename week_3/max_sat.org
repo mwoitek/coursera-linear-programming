@@ -1,0 +1,42 @@
+#+AUTHOR: Marcio Woitek
+#+TITLE: Max-SAT Approximation
+
+* Problem 1
+
+\begin{equation}
+4 \dot \frac{7}{8} = \frac{7}{2} = 3.5
+\end{equation}
+
+* Problem 2
+
+There is a truth assignment that satisfies all the clauses.
+
+* Problem 3
+
+By setting $x_1 = \mathrm{T}$, the clauses involving $x_1$ reduce to
+\begin{eqnarray}
+x_1 \vee x_2 \vee \bar{x_4} &=& \mathrm{T} \\
+x_1 \vee \bar{x_2} \vee x_3 &=& \mathrm{T}.
+\end{eqnarray}
+The other 2 clauses remain unchanged. Then the expected number of clauses we can
+satisfy is given by
+\begin{equation}
+1 + \frac{7}{8} + 1 + \frac{7}{8} = 3 + \frac{3}{4} = 3.75
+\end{equation}
+
+* Problem 4
+
+By setting $x_1 = \mathrm{F}$, the clauses involving $x_1$ reduce to
+\begin{eqnarray}
+x_1 \vee x_2 \vee \bar{x_4} &=& x_2 \vee \bar{x_4} \\
+x_1 \vee \bar{x_2} \vee x_3 &=& \bar{x_2} \vee x_3.
+\end{eqnarray}
+The other 2 clauses remain unchanged. Then the expected number of clauses we can
+satisfy is given by
+\begin{equation}
+\frac{3}{4} + \frac{7}{8} + \frac{3}{4} + \frac{7}{8} = \frac{13}{4} = 3.25
+\end{equation}
+
+* Problem 5
+
+True
