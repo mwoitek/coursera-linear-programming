@@ -35,13 +35,13 @@ There is a truth assignment that satisfies all the clauses.
 
 By setting $x_1 = \mathrm{T}$, the clauses involving $x_1$ reduce to
 \begin{eqnarray*}
-x_1 \vee x_2 \vee \overline{x}_4 &=& \mathrm{T} \\
+x_1 \vee x_2 \vee \overline{x}_4 &=& \mathrm{T}, \\
 x_1 \vee \overline{x}_2 \vee x_3 &=& \mathrm{T}.
 \end{eqnarray*}
 The other 2 clauses remain unchanged. Then the expected number of clauses we can
 satisfy is given by
 \begin{equation}
-1 + \frac{7}{8} + 1 + \frac{7}{8} = 3 + \frac{3}{4} = 3.75
+1 + \frac{7}{8} + 1 + \frac{7}{8} = 3 + \frac{3}{4} = 3.75.
 \end{equation}
 
 * Problem 4
@@ -51,13 +51,13 @@ satisfy is given by
 
 By setting $x_1 = \mathrm{F}$, the clauses involving $x_1$ reduce to
 \begin{eqnarray*}
-x_1 \vee x_2 \vee \overline{x}_4 &=& x_2 \vee \overline{x}_4 \\
+x_1 \vee x_2 \vee \overline{x}_4 &=& x_2 \vee \overline{x}_4, \\
 x_1 \vee \overline{x}_2 \vee x_3 &=& \overline{x}_2 \vee x_3.
 \end{eqnarray*}
 The other 2 clauses remain unchanged. Then the expected number of clauses we can
 satisfy is given by
 \begin{equation}
-\frac{3}{4} + \frac{7}{8} + \frac{3}{4} + \frac{7}{8} = \frac{13}{4} = 3.25
+\frac{3}{4} + \frac{7}{8} + \frac{3}{4} + \frac{7}{8} = \frac{13}{4} = 3.25.
 \end{equation}
 
 * Problem 5
