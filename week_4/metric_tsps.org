@@ -1,0 +1,93 @@
+#+AUTHOR: Marcio Woitek
+#+TITLE: Approximations for Metric TSPs
+#+DATE:
+#+LATEX_HEADER: \usepackage[a4paper,left=1cm,right=1cm,top=1cm,bottom=1cm]{geometry}
+#+LATEX_HEADER: \usepackage[american]{babel}
+#+LATEX_HEADER: \usepackage{enumitem}
+#+LATEX_HEADER: \usepackage{float}
+#+LATEX_HEADER: \usepackage[sc]{mathpazo}
+#+LATEX_HEADER: \linespread{1.05}
+#+LATEX_HEADER: \renewcommand{\labelitemi}{$\rhd$}
+#+LATEX_HEADER: \setlength\parindent{0pt}
+#+LATEX_HEADER: \setlist[itemize]{leftmargin=*}
+#+LATEX_HEADER: \setlist{nosep}
+#+OPTIONS: toc:nil
+#+STARTUP: hideblocks
+
+#+BEGIN_SRC latex
+\thispagestyle{empty}
+\pagestyle{empty}
+#+END_SRC
+
+Problems 1-4 are related to the figure below.
+#+BEGIN_SRC latex
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.15]{tsp_mst_quiz.jpeg}
+  \caption{Minimum spanning tree for some TSP instance}
+\end{figure}
+#+END_SRC
+
+* Problem 1
+:PROPERTIES:
+:UNNUMBERED: notoc
+:END:
+
+- \( (4,1) \)
+- \( (5,6) \)
+- \( (6,3) \)
+
+* Problem 2
+:PROPERTIES:
+:UNNUMBERED: notoc
+:END:
+
+- \( C_{6,5}=C_{5,6} \)
+- \( C_{6,5}\leq 2 \)
+
+* Problem 3
+:PROPERTIES:
+:UNNUMBERED: notoc
+:END:
+
+- The cost of the tour must be less than or equal to twice the cost of the MST.
+- The cost of the TSP tour must be \( \leq 10 \).
+
+* Problem 4
+:PROPERTIES:
+:UNNUMBERED: notoc
+:END:
+
+- The optimal tour cost has to be \( \geq 5 \).
+- The optimal tour cost has to be \( \leq 10 \).
+
+#+BEGIN_SRC latex
+\newpage
+#+END_SRC
+
+The next two problems are related to this graph:
+#+BEGIN_SRC latex
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.15]{tsp_mst_with_matching.jpeg}
+  \caption{Graph for Problems 5 and 6}
+\end{figure}
+#+END_SRC
+
+* Problem 5
+:PROPERTIES:
+:UNNUMBERED: notoc
+:END:
+
+*Answer: \( [1,2,5,4,3,6] \)*
+
+* Problem 6
+:PROPERTIES:
+:UNNUMBERED: notoc
+:END:
+
+- Cost of TSP tour is less than or equal to 8.7.
+- The cost of the tour must be less than or equal to the cost of all the edges
+  in the matching + cost of all edges in the MST.
+- Cost of TSP tour is less than or equal to 10 (the bound we placed on the cost
+  of the previous tour using DFS).
