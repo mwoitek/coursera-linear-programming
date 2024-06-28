@@ -1,0 +1,85 @@
+#+AUTHOR: Marcio Woitek
+#+TITLE: Fully Polynomial Time Approximation Scheme
+#+DATE:
+#+LATEX_HEADER: \usepackage[a4paper,left=1cm,right=1cm,top=1cm,bottom=1cm]{geometry}
+#+LATEX_HEADER: \usepackage[american]{babel}
+#+LATEX_HEADER: \usepackage{enumitem}
+#+LATEX_HEADER: \usepackage{float}
+#+LATEX_HEADER: \usepackage[sc]{mathpazo}
+#+LATEX_HEADER: \linespread{1.05}
+#+LATEX_HEADER: \renewcommand{\labelitemi}{$\rhd$}
+#+LATEX_HEADER: \setlength\parindent{0pt}
+#+LATEX_HEADER: \setlist[itemize]{leftmargin=*}
+#+LATEX_HEADER: \setlist{nosep}
+#+LATEX_HEADER: \newcommand{\opt}{\mathrm{OPT}}
+#+OPTIONS: toc:nil
+#+STARTUP: hideblocks
+
+#+BEGIN_SRC latex
+\thispagestyle{empty}
+\pagestyle{empty}
+#+END_SRC
+
+* Problem 1
+:PROPERTIES:
+:UNNUMBERED: notoc
+:END:
+
+*Answer:* \( 100\:n^2 \)\\
+
+We begin by computing the value of \( \varepsilon \):
+\begin{align}
+  \begin{split}
+    (1-\varepsilon)\:\opt&=0.9\:\opt\\
+    \opt-\varepsilon\:\opt&=0.9\:\opt\\
+    \opt-0.9\:\opt&=\varepsilon\:\opt\\
+    0.1\:\opt&=\varepsilon\:\opt\\
+    0.1&=\varepsilon\\
+    \varepsilon&=0.1\\
+    \varepsilon&=\frac{1}{10}
+  \end{split}
+\end{align}
+Next, we use this result to evaluate the time cost:
+\begin{equation}
+n^2\left(\frac{1}{\varepsilon}\right)^2=n^2\cdot 10^2=100\:n^2.
+\end{equation}
+
+* Problem 2
+:PROPERTIES:
+:UNNUMBERED: notoc
+:END:
+
+*Answer:* \( \max\{v|0\leq v\leq 5\:\mathrm{and}\:W(4,v)\leq 6\} \)
+
+* Problem 3
+:PROPERTIES:
+:UNNUMBERED: notoc
+:END:
+
+*Answer:*
+- \( W(0,0)=0 \)
+- \( W(1,1)=2 \)
+- \( W(1,1)=\min(W(0,1),W(1,0)+2) \)\\
+
+Two of the options are easy to check. We were given the equation \( W(0,0)=0 \).
+Then the corresponding option is *correct*. The expression for \( W(0,1) \) is
+also simple to evaluate. After all, we were given the equation for \( W(0,v) \).
+Since this value is infinity for \( v>0 \), the option involving \( W(0,1) \) is
+*wrong*.\\
+To make a decision on the remaining options, we need to compute the value of
+\( W(1,1) \). This can be done as follows:
+\begin{align}
+  \begin{split}
+    W(1,1)&=\min(W(1-1,1),W(1-1,1-v_1)+w_1)\\
+    &=\min(W(0,1),W(0,1-1)+2)\\
+    &=\min(W(0,1),W(0,0)+2)\\
+    &=\min(W(0,1),0+2)\\
+    &=\min(\infty,2)\\
+    &=2
+  \end{split}
+\end{align}
+Therefore, the option containing a value is *correct*. The other option is also
+*right*, since \( W(0,0)=W(1,0)=0 \). This allows us to write
+\begin{equation}
+\min(W(0,1),W(1,0)+2)=\min(W(0,1),W(0,0)+2)=W(1,1).
+\end{equation}
