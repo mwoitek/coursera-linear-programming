@@ -621,3 +621,151 @@ assert (
 ), f"The TSP + shortcutting tour must be at least 10^6 times costlier than optimum. In your case, the ratio is {tour_cost / opt_tour_cost}"
 
 print("Test passed: 7 points")
+
+# %% [markdown]
+# ## Problem 3
+
+
+# %%
+def tsp_with_extra_constraints(n, cost_matrix, constraints):
+    assert len(cost_matrix) == n, f"Cost matrix is not {n}x{n}"
+    assert all(len(row) == n for row in cost_matrix), f"Cost matrix is not {n}x{n}"
+    assert all(1 <= i < n and 1 <= j < n and i != j for i, j in constraints)
+
+    # Create decision variables
+    binary_vars = [
+        [LpVariable(f"x_{{{i},{j}}}", cat=LpBinary) if i != j else None for j in range(n)] for i in range(n)
+    ]
+    time_stamps = [LpVariable(f"t_{i}", lowBound=0, upBound=n) for i in range(1, n)]
+
+    # Create the problem
+    prob = LpProblem("TSP-MTZ-Extra-Constraints", LpMinimize)
+
+    # Add the objective function
+    prob += lpSum(
+        lpSum(cost_matrix[i][j] * binary_vars[i][j] for j in filter(lambda x: x != i, range(n)))
+        for i in range(n)
+    )
+
+    # Add the degree constraints
+    for i in range(n):
+        prob += lpSum(filter(lambda x: x is not None, binary_vars[i])) == 1
+        prob += lpSum(binary_vars[j][i] for j in filter(lambda x: x != i, range(n))) == 1
+
+    # Add time stamp constraints
+    for i in range(1, n):
+        for j in filter(lambda x: x != i, range(1, n)):
+            x = binary_vars[i][j]
+            prob += time_stamps[j - 1] >= time_stamps[i - 1] + x - (1 - x) * (n + 1)  # pyright: ignore
+
+    # Add extra constraints
+    for i, j in constraints:
+        prob += time_stamps[j - 1] >= time_stamps[i - 1] + 1
+
+    # Solve the problem
+    prob.solve(PULP_CBC_CMD(msg=False))
+    status = LpStatus[prob.status]
+    assert status == "Optimal", f"Unexpected non-optimal status: {status}"
+
+    # Extract the tour
+    tour = [0]
+
+    while len(tour) < n:
+        nxt = [j for j, x in enumerate(binary_vars[tour[-1]]) if x is not None and x.varValue > 0]  # pyright: ignore
+        assert len(nxt) == 1
+        j = nxt[0]
+        assert j != 0
+        tour.append(j)
+
+    return tour
+
+
+# %%
+n = 5
+cost_matrix = [
+    [None, 3, 4, 3, 5],
+    [1, None, 2, 4, 1],
+    [2, 1, None, 5, 4],
+    [1, 1, 5, None, 4],
+    [2, 1, 3, 5, None],
+]
+constraints = [(3, 4), (1, 2)]
+tour = tsp_with_extra_constraints(n, cost_matrix, constraints)
+print(f"Tour: {tour}")
+
+tour_cost = 0
+i = 0
+for j in tour[1:]:
+    tour_cost += cost_matrix[i][j]
+    i = j
+tour_cost += cost_matrix[i][0]
+print(f"Cost of your tour: {tour_cost}")
+assert abs(tour_cost - 10) <= 0.001, "Expected cost was 10"
+
+for i in range(n):
+    num = sum(j == i for j in tour)
+    assert num == 1, f"Vertex {i} repeats {num} times in tour"
+
+for i, j in constraints:
+    assert tour.index(i) < tour.index(j), f"Tour does not respect constraint {(i, j)}"
+
+print("Test Passed (3 points)")
+
+# %%
+n = 5
+cost_matrix = [
+    [None, 3, 4, 3, 5],
+    [1, None, 2, 4, 1],
+    [2, 1, None, 5, 4],
+    [1, 1, 5, None, 4],
+    [2, 1, 3, 5, None],
+]
+constraints = [(4, 3), (1, 2)]
+tour = tsp_with_extra_constraints(n, cost_matrix, constraints)
+print(f"Tour: {tour}")
+
+tour_cost = 0
+i = 0
+for j in tour[1:]:
+    tour_cost += cost_matrix[i][j]
+    i = j
+tour_cost += cost_matrix[i][0]
+print(f"Cost of your tour: {tour_cost}")
+assert abs(tour_cost - 13) <= 0.001, "Expected cost was 13"
+
+for i in range(n):
+    num = sum(j == i for j in tour)
+    assert num == 1, f"Vertex {i} repeats {num} times in tour"
+
+for i, j in constraints:
+    assert tour.index(i) < tour.index(j), f"Tour does not respect constraint {(i, j)}"
+
+print("Test Passed (3 points)")
+
+# %%
+for trial in range(20):
+    print(f"Trial #{trial}")
+
+    n = randint(6, 11)
+    cost_matrix = create_cost(n)
+    constraints = [(1, 3), (4, 2), (n - 1, 1), (n - 2, 2)]
+
+    tour = tsp_with_extra_constraints(n, cost_matrix, constraints)
+    print(f"Tour: {tour}")
+
+    tour_cost = 0
+    i = 0
+    for j in tour[1:]:
+        tour_cost += cost_matrix[i][j]  # pyright: ignore
+        i = j
+    tour_cost += cost_matrix[i][0]  # pyright: ignore
+    print(f"Cost of your tour: {tour_cost}")
+
+    for i in range(n):
+        num = sum(j == i for j in tour)
+        assert num == 1, f"Vertex {i} repeats {num} times in tour"
+
+    for i, j in constraints:
+        assert tour.index(i) < tour.index(j), f"Tour does not respect constraint {(i, j)}"
+
+print("Test Passed (10 points)")
